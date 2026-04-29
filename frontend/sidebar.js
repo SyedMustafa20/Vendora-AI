@@ -3,7 +3,6 @@
     { icon: 'dashboard',  label: 'Dashboard',      href: 'dashboard.html',       page: 'dashboard.html' },
     { icon: 'chat',       label: 'Conversations',  href: 'conversationTab.html', page: 'conversationTab.html' },
     { icon: 'smart_toy',  label: 'Agent Settings', href: 'agentManager.html',    page: 'agentManager.html' },
-    { icon: 'analytics',  label: 'Analytics',      href: 'dashboard.html',       page: null },
   ];
 
   function render() {
@@ -19,35 +18,33 @@
         : 'rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50';
       const iconColor = isActive ? 'text-[#25D366]' : '';
       const fillStyle = isActive ? "font-variation-settings: 'FILL' 1;" : '';
-      return `<a class="flex items-center gap-3 px-4 py-3 transition-colors duration-200 group ${stateClasses}" href="${item.href}">
+      return `<a class="flex items-center gap-3 px-4 py-2.5 transition-colors duration-200 group ${stateClasses}" href="${item.href}">
         <span class="material-symbols-outlined text-lg ${iconColor}" style="${fillStyle}">${item.icon}</span>
         <span class="text-sm font-medium">${item.label}</span>
       </a>`;
     }).join('\n');
 
     aside.innerHTML = `
-      <div class="px-6 mb-8 flex items-center gap-3">
-        <div class="w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center">
-          <span class="material-symbols-outlined text-on-primary-container text-xl"
+      <div class="px-5 mb-6 flex items-center gap-2.5">
+        <div class="w-8 h-8 bg-[#25D366] rounded-lg flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-white text-lg"
                 style="font-variation-settings: 'FILL' 1;">smart_toy</span>
         </div>
-        <div>
-          <h1 class="text-xl font-black text-white leading-tight">BotManager</h1>
-          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Enterprise AI</p>
-        </div>
+        <h1 class="text-lg font-black text-white leading-tight tracking-tight">Vendora AI</h1>
       </div>
-      <nav class="flex-1 px-3 space-y-1">
+      <nav class="flex-1 px-3 space-y-0.5">
         ${navLinks}
       </nav>
-      <div class="mt-auto px-3 space-y-1">
-        <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white transition-colors duration-200 hover:bg-slate-800/50 rounded-lg"
+      <div class="mt-auto px-3 pt-4 border-t border-slate-800 space-y-0.5">
+        <a class="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-white transition-colors duration-200 hover:bg-slate-800/50 rounded-lg"
            href="#">
           <span class="material-symbols-outlined text-lg">settings</span>
           <span class="text-sm font-medium">Settings</span>
         </a>
-        <button class="w-full flex items-center justify-center py-3 text-slate-400 hover:text-white transition-colors duration-200 hover:bg-slate-800/50 rounded-lg"
-                title="Help &amp; Support">
-          <span class="material-symbols-outlined text-lg">help_center</span>
+        <button onclick="if(typeof Auth!=='undefined')Auth.logout()"
+                class="w-full flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-white hover:bg-red-900/40 transition-colors duration-200 rounded-lg">
+          <span class="material-symbols-outlined text-lg">logout</span>
+          <span class="text-sm font-medium">Log Out</span>
         </button>
       </div>`;
   }

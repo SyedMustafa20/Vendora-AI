@@ -1,17 +1,22 @@
-import os
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 
 from agent.agent import Agent
 from models.message import Message
 from models.conversation import Conversation
+from models.agent import AgentConfig
 from services.summarize_conversation import update_summary_if_needed, get_cached_summary
 from services.get_conversation import get_or_create_conversation
 from services.get_user import get_or_create_user
 
 load_dotenv()
 
-agent = Agent(openrouter_api_key=os.getenv("OPENROUTER_API_KEY"))
+agent = Agent()
+
+
+def _load_agent_config(db: Session) -> AgentConfig | None:
+    """Load the first active agent config from the DB (single-tenant bot)."""
+    return db.query(AgentConfig).first()
 
 # Constants for message types
 MESSAGE_TYPE_FIRST_TIME = "first_time"
@@ -19,8 +24,8 @@ MESSAGE_TYPE_GUARDRAIL_REJECT = "guardrail_reject"
 MESSAGE_TYPE_REGULAR = "regular"
 
 
-def _save_message(db: Session, conversation_id: int, sender: str, content: str) -> Message:
-    msg = Message(conversation_id=conversation_id, sender_type=sender, content=content)
+def _save_message(db: Session, user_id: int, conversation_id: int, sender: str, content: str) -> Message:
+    msg = Message(user_id=user_id, conversation_id=conversation_id, sender_type=sender, content=content)
     db.add(msg)
     db.commit()
     db.refresh(msg)
@@ -128,12 +133,17 @@ def handle_message(db: Session, sender_phone: str, user_message: str) -> str:
     7. LLM RESPONSE GENERATOR - Generate response with leading questions
     """
     
+    # Load agent config (prompt + temperature set by admin)
+    agent_config = _load_agent_config(db)
+    base_prompt  = agent_config.generative_prompt if agent_config else None
+    temperature  = agent_config.temperature if agent_config else 0.3
+
     # Get or create user and conversation
     user = get_or_create_user(db, sender_phone)
     conversation = get_or_create_conversation(db, user.id)
     
     # Save the user message
-    _save_message(db, conversation.id, "user", user_message)
+    _save_message(db,user.id, conversation.id, "user", user_message)
     
     # ==========================================
     # [1] GUARDRAIL LAYER (STRICT FILTERING)
@@ -150,15 +160,15 @@ def handle_message(db: Session, sender_phone: str, user_message: str) -> str:
     # ==========================================
     if message_type == MESSAGE_TYPE_FIRST_TIME:
         reply = agent.get_first_message_greeting()
-        _save_message(db, conversation.id, "agent", reply)
+        _save_message(db, user.id, conversation.id, "agent", reply)
         return reply
-    
+
     # ==========================================
     # [2B] GUARDRAIL REJECTION
     # ==========================================
     if message_type == MESSAGE_TYPE_GUARDRAIL_REJECT:
         reply = get_default_response(guardrail_result.get("reason"))
-        _save_message(db, conversation.id, "agent", reply)
+        _save_message(db, user.id, conversation.id, "agent", reply)
         return reply
     
     # ==========================================
@@ -203,12 +213,14 @@ def handle_message(db: Session, sender_phone: str, user_message: str) -> str:
     reply = agent.generate_response(
         message=user_message,
         context=context,
-        intent=intent
+        intent=intent,
+        base_prompt=base_prompt,
+        temperature=temperature,
     )
     
     # ==========================================
     # SAVE RESPONSE
     # ==========================================
-    _save_message(db, conversation.id, "agent", reply)
+    _save_message(db, user.id, conversation.id, "agent", reply)
     
     return reply

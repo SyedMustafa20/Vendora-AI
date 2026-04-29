@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
-# Add these imports at the top
 from services.dashboard_service import get_dashboard_data
+from services.conversations_service import get_conversations_page
+from services.agent_service import get_agent, update_agent
 from schemas.dashboard import DashboardResponse
-from core.jwt import decode_access_token as verify_token  # You'll need to use this for auth
-
+from schemas.conversations import ConversationsPage
+from schemas.agent import AgentConfigResponse, AgentConfigUpdate
+from core.jwt import decode_access_token, TokenError
 
 from db.database import get_db
 from schemas.admin import (
@@ -14,12 +17,19 @@ from schemas.admin import (
     TokenRefreshRequest, TokenRefreshResponse,
     LogoutRequest,
 )
-from services.admin_registrar import register_admin, AdminAlreadyExistsError
+from backend.services.admin_registrar import register_admin, AdminAlreadyExistsError
 from services.admin_login import login_admin, InvalidPasswordError
 from services.token_service import issue_token_pair, refresh_token_pair, revoke_refresh_token
-from core.jwt import TokenError
 
 router = APIRouter()
+
+_bearer = HTTPBearer()
+
+def require_auth(credentials: HTTPAuthorizationCredentials = Depends(_bearer)) -> dict:
+    try:
+        return decode_access_token(credentials.credentials)
+    except TokenError as exc:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc))
 
 
 @router.post(
@@ -77,19 +87,69 @@ def logout_endpoint(payload: LogoutRequest):
 
 
 
-# Add this endpoint to the router
 @router.get("/dashboard", response_model=DashboardResponse)
 def get_dashboard(
     db: Session = Depends(get_db),
-    authorization: str = Depends(verify_token),  # Add auth header check
+    _: dict = Depends(require_auth),
 ):
-    """
-    Get complete dashboard data in one call.
-    
-    Returns:
-    - stats: total_conversations, total_messages, total_users
-    - intent_distribution: count per intent type
-    - messages_per_day: daily agent messages (30 days)
-    - recent_conversations: activity feed
-    """
     return get_dashboard_data(db)
+
+
+@router.get("/conversations", response_model=ConversationsPage)
+def list_conversations(
+    page: int = Query(1, ge=1, description="Page number (1-based)"),
+    page_size: int = Query(20, ge=1, le=100, description="Items per page"),
+    db: Session = Depends(get_db),
+    _: dict = Depends(require_auth),
+):
+    return get_conversations_page(db, page=page, page_size=page_size)
+
+
+@router.get("/agent", response_model=AgentConfigResponse)
+def get_agent_config(
+    db: Session = Depends(get_db),
+    auth: dict = Depends(require_auth),
+):
+    admin_id = auth["admin_id"]
+    config = get_agent(db, admin_id)
+    if config is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent config not found")
+    return AgentConfigResponse(
+        id=config.id,
+        admin_id=config.admin_id,
+        agent_type=config.agent_type,
+        agent_behavior_type=config.agent_behavior_type,
+        intent_prompt=config.intent_prompt,
+        generative_prompt=config.generative_prompt,
+        model_name=config.model_name,
+        model_version=config.model_version,
+        temperature=config.temperature,
+        created_at=config.created_at.isoformat() if config.created_at else None,
+        updated_at=config.updated_at.isoformat() if config.updated_at else None,
+    )
+
+
+@router.patch("/agent", response_model=AgentConfigResponse)
+def update_agent_config(
+    payload: AgentConfigUpdate,
+    db: Session = Depends(get_db),
+    auth: dict = Depends(require_auth),
+):
+    admin_id = auth["admin_id"]
+    try:
+        config = update_agent(db, admin_id, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+    return AgentConfigResponse(
+        id=config.id,
+        admin_id=config.admin_id,
+        agent_type=config.agent_type,
+        agent_behavior_type=config.agent_behavior_type,
+        intent_prompt=config.intent_prompt,
+        generative_prompt=config.generative_prompt,
+        model_name=config.model_name,
+        model_version=config.model_version,
+        temperature=config.temperature,
+        created_at=config.created_at.isoformat() if config.created_at else None,
+        updated_at=config.updated_at.isoformat() if config.updated_at else None,
+    )

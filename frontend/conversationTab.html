@@ -1,406 +1,510 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
+<html class="light" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>BotManager - Conversations</title>
+<script src="auth.js"></script>
+<title>Vendora AI – Conversations</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "primary": "#006d2f",
-                        "primary-fixed": "#66ff8e",
-                        "on-primary-container": "#005523",
-                        "on-error-container": "#93000a",
-                        "tertiary-container": "#ffa07e",
-                        "surface-container": "#e6eff9",
-                        "surface-container-highest": "#dae4ed",
-                        "background": "#f6faff",
-                        "surface-bright": "#f6faff",
-                        "tertiary-fixed": "#ffdbcf",
-                        "surface-tint": "#006d2f",
-                        "surface-container-high": "#e0e9f3",
-                        "on-primary-fixed": "#002109",
-                        "on-surface": "#141d24",
-                        "surface-container-low": "#ebf5ff",
-                        "tertiary": "#93492e",
-                        "error": "#ba1a1a",
-                        "secondary": "#006b5f",
-                        "on-secondary": "#ffffff",
-                        "outline": "#6c7b6b",
-                        "outline-variant": "#bbcbb9",
-                        "on-surface-variant": "#3c4a3d",
-                        "error-container": "#ffdad6",
-                        "on-secondary-container": "#006f64",
-                        "inverse-surface": "#283139",
-                        "on-tertiary-fixed": "#380d00",
-                        "primary-fixed-dim": "#3de273",
-                        "on-tertiary-container": "#78351b",
-                        "on-tertiary": "#ffffff",
-                        "on-secondary-fixed": "#00201c",
-                        "on-secondary-fixed-variant": "#005047",
-                        "surface-variant": "#dae4ed",
-                        "primary-container": "#25d366",
-                        "surface-container-lowest": "#ffffff",
-                        "secondary-fixed": "#8ff4e3",
-                        "inverse-on-surface": "#e9f2fc",
-                        "on-background": "#141d24",
-                        "on-error": "#ffffff",
-                        "tertiary-fixed-dim": "#ffb59b",
-                        "surface-dim": "#d2dbe5",
-                        "secondary-container": "#8cf1e1",
-                        "inverse-primary": "#3de273",
-                        "on-primary-fixed-variant": "#005322",
-                        "secondary-fixed-dim": "#72d8c8",
-                        "on-primary": "#ffffff",
-                        "surface": "#f6faff",
-                        "on-tertiary-fixed-variant": "#763319"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "sidebar-width": "260px",
-                        "xl": "32px",
-                        "container-margin": "24px",
-                        "md": "16px",
-                        "lg": "24px",
-                        "sm": "12px",
-                        "base": "4px",
-                        "xs": "8px"
-                    },
-                    "fontFamily": {
-                        "h1": ["Manrope"],
-                        "label-md": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "h3": ["Manrope"],
-                        "h2": ["Manrope"],
-                        "code": ["Inter"],
-                        "body-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "h1": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "code": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
-                    }
-                }
-            }
-        }
-    </script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#006d2f", "on-primary-container": "#005523",
+          "tertiary-container": "#ffa07e", "surface-container": "#e6eff9",
+          "surface-container-highest": "#dae4ed", "background": "#f6faff",
+          "surface-container-high": "#e0e9f3", "on-surface": "#141d24",
+          "surface-container-low": "#ebf5ff", "tertiary": "#93492e",
+          "error": "#ba1a1a", "secondary": "#006b5f", "outline": "#6c7b6b",
+          "outline-variant": "#bbcbb9", "on-surface-variant": "#3c4a3d",
+          "error-container": "#ffdad6", "on-secondary-container": "#006f64",
+          "on-tertiary-fixed": "#380d00", "primary-fixed-dim": "#3de273",
+          "on-tertiary-container": "#78351b", "on-tertiary": "#ffffff",
+          "on-secondary-fixed": "#00201c", "surface-variant": "#dae4ed",
+          "primary-container": "#25d366", "surface-container-lowest": "#ffffff",
+          "secondary-fixed": "#8ff4e3", "inverse-on-surface": "#e9f2fc",
+          "on-background": "#141d24", "on-error": "#ffffff",
+          "tertiary-fixed": "#ffdbcf", "tertiary-fixed-dim": "#ffb59b",
+          "secondary-container": "#8cf1e1", "on-primary": "#ffffff",
+          "surface": "#f6faff",
+        },
+        fontFamily: {
+          "h1": ["Manrope"], "h2": ["Manrope"], "h3": ["Manrope"],
+          "label-md": ["Inter"], "body-lg": ["Inter"], "body-md": ["Inter"],
+        },
+        fontSize: {
+          "h1": ["30px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }],
+          "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600" }],
+          "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+          "h3": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+          "h2": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }],
+          "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+        },
+        spacing: { "xl": "32px", "lg": "24px", "md": "16px", "sm": "12px", "xs": "8px" }
+      }
+    }
+  }
+</script>
 <style>
-        body { background-color: #f6faff; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .sidebar-active { border-left-width: 4px; border-color: #25D366; background-color: rgba(30, 41, 59, 0.5); color: white; font-weight: 600; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-    </style>
+  body { background-color: #f6faff; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  .conv-row { cursor: pointer; transition: background-color 0.12s; }
+  .conv-row:hover { background-color: #ebf5ff; }
+  .conv-row.active { border-left: 3px solid #25d366 !important; background-color: #ebf5ff; }
+</style>
 </head>
 <body class="font-body-md text-on-surface">
-<!-- SideNavBar Component -->
-<aside class="fixed left-0 top-0 h-full w-64 border-r border-slate-800 bg-slate-900 dark:bg-black font-manrope antialiased tracking-tight flex flex-col py-6 z-50">
-<div class="px-6 mb-10 flex items-center gap-3">
-<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
-</div>
-<div>
-<h1 class="text-xl font-black text-white leading-none">BotManager</h1>
-<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mt-1">Enterprise AI</p>
-</div>
-</div>
-<nav class="flex-1 space-y-1">
-<a class="flex items-center px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all" href="#">
-<span class="material-symbols-outlined mr-3">dashboard</span>
-<span class="font-body-md">Dashboard</span>
-</a>
-<a class="flex items-center px-6 py-3 border-l-4 border-[#25D366] bg-slate-800/50 text-white font-semibold transition-all" href="#">
-<span class="material-symbols-outlined mr-3 text-[#25D366]">chat</span>
-<span class="font-body-md">Conversations</span>
-</a>
-<a class="flex items-center px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all" href="#">
-<span class="material-symbols-outlined mr-3">smart_toy</span>
-<span class="font-body-md">Agent Settings</span>
-</a>
-<a class="flex items-center px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all" href="#">
-<span class="material-symbols-outlined mr-3">analytics</span>
-<span class="font-body-md">Analytics</span>
-</a>
-</nav>
-<div class="mt-auto border-t border-slate-800 pt-6 space-y-1">
-<a class="flex items-center px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all" href="#">
-<span class="material-symbols-outlined mr-3">settings</span>
-<span class="font-body-md">Settings</span>
-</a>
-<a class="flex items-center px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all" href="#">
-<span class="material-symbols-outlined mr-3">help_center</span>
-<span class="font-body-md">Support</span>
-</a>
-</div>
-</aside>
-<!-- TopNavBar Component -->
-<header class="fixed top-0 right-0 left-64 h-16 border-b border-slate-200 bg-white/80 backdrop-blur-md flex items-center justify-between px-8 z-40">
-<div class="flex items-center gap-4 flex-1">
-<div class="relative w-full max-w-md">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all" placeholder="Search conversations, users or intents..." type="text"/>
-</div>
-</div>
-<div class="flex items-center gap-6">
-<button class="relative text-slate-600 hover:text-slate-900 transition-colors">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
-</button>
-<button class="text-slate-600 hover:text-slate-900 transition-colors">
-<span class="material-symbols-outlined">history</span>
-</button>
-<div class="h-8 w-px bg-slate-200"></div>
-<div class="flex items-center gap-3">
-<div class="text-right hidden sm:block">
-<p class="text-sm font-bold text-slate-900">Alex Rivera</p>
-<p class="text-[10px] text-slate-500 font-semibold uppercase">Admin Access</p>
-</div>
-<img class="w-10 h-10 rounded-full border border-slate-200 object-cover" data-alt="Professional headshot of a young male administrator with a friendly expression in a modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKgx-Hk0IhBp1wpwBj_QrvrX1_YHyXI4jB5jhyhQ5SgqD8o5uQTlHI4aD6pHyskewCTYhVTsuPlZ3BcsJrAMjhMGp8eVSKuqdh1LZlmvs001vU0SYiG6BkReVUjITV-52skHE8M0OhhfJqmfhxOz7i9xH60Jd0d3lH9uk435Z0EMNcZ39a08jZLz9ULx6GDacKtWkdJzutynHJA7HZq_4FcJDe6JoQvKvMU8bMjutjMFXZyHNMp88OMcGjgvstXPMVOoBLjwhPFgE"/>
-</div>
-</div>
+
+<!-- Sidebar — populated by sidebar.js -->
+<aside id="sidebar" class="fixed left-0 top-0 h-full w-64 border-r border-slate-800 bg-slate-900 dark:bg-black font-manrope antialiased tracking-tight flex flex-col py-5 z-50"></aside>
+
+<!-- Top Header -->
+<header class="fixed top-0 right-0 left-64 h-14 border-b border-slate-200 bg-white/80 backdrop-blur-md flex items-center justify-between px-6 z-40">
+  <div class="flex items-center gap-3 flex-1 max-w-md">
+    <div class="relative w-full">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+      <input id="search-input"
+             class="w-full pl-9 pr-4 py-1.5 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all"
+             placeholder="Search by phone or intent…" type="text"/>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button class="relative w-8 h-8 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-full transition-colors">
+      <span class="material-symbols-outlined text-lg">notifications</span>
+      <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-error rounded-full"></span>
+    </button>
+    <div class="h-6 w-px bg-slate-200 mx-1"></div>
+    <div class="relative">
+      <button id="profile-btn" class="flex items-center gap-2 px-2 py-1 hover:bg-slate-100 rounded-lg transition-colors">
+        <div id="profile-avatar" class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-bold text-on-primary-container select-none">A</div>
+        <span id="header-username" class="text-sm font-semibold text-slate-700 hidden sm:block">Admin</span>
+        <span class="material-symbols-outlined text-slate-400 text-sm">expand_more</span>
+      </button>
+      <div id="profile-dropdown" class="hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-50">
+        <div class="px-3 py-2 border-b border-slate-100">
+          <p class="text-xs font-bold text-slate-900">Admin</p>
+          <p class="text-[10px] text-slate-400 uppercase tracking-wider">Admin Access</p>
+        </div>
+        <button id="logout-btn" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+          <span class="material-symbols-outlined text-sm">logout</span> Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
 </header>
-<!-- Main Content Canvas -->
-<main class="ml-64 pt-16 min-h-screen">
-<div class="p-xl grid grid-cols-12 gap-lg">
-<!-- Table Section -->
-<div class="col-span-12 lg:col-span-7 space-y-lg">
-<div class="flex items-center justify-between">
-<div>
-<h2 class="font-h2 text-on-surface">Recent Conversations</h2>
-<p class="font-body-md text-on-surface-variant">Monitoring 1,284 active sessions across 3 regions</p>
-</div>
-<div class="flex gap-xs">
-<button class="flex items-center gap-2 px-4 py-2 bg-white border border-outline-variant rounded-lg font-label-md text-on-surface hover:bg-surface-container transition-all">
-<span class="material-symbols-outlined text-sm">filter_list</span> Filter
-                        </button>
-<button class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-label-md hover:opacity-90 transition-all shadow-sm">
-<span class="material-symbols-outlined text-sm">download</span> Export
-                        </button>
-</div>
-</div>
-<!-- Table Card -->
-<div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
-<table class="w-full text-left border-collapse">
-<thead class="bg-surface-container-low border-b border-outline-variant">
-<tr>
-<th class="px-6 py-4 font-label-md text-on-surface-variant">USER / PHONE</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant">INTENT</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant">LAST MESSAGE</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant text-right">ACTION</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-outline-variant">
-<tr class="hover:bg-surface-container-lowest transition-colors group">
-<td class="px-6 py-4">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
-<span class="material-symbols-outlined text-sm text-primary">person</span>
-</div>
-<div>
-<p class="font-body-md font-semibold text-on-surface">+1 (555) 012-3456</p>
-<p class="text-[11px] text-on-surface-variant">Session ID: BM-92841</p>
-</div>
-</div>
-</td>
-<td class="px-6 py-4">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                        Order Tracking
-                                    </span>
-</td>
-<td class="px-6 py-4">
-<p class="font-body-md text-on-surface truncate max-w-[200px]">"When will my package arrive at..."</p>
-<p class="text-[11px] text-on-surface-variant">2 mins ago</p>
-</td>
-<td class="px-6 py-4 text-right">
-<button class="p-2 rounded-lg text-primary hover:bg-primary/5 transition-colors">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
-</td>
-</tr>
-<tr class="bg-surface-container-lowest border-l-4 border-primary">
-<td class="px-6 py-4">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center">
-<span class="material-symbols-outlined text-sm text-primary">person</span>
-</div>
-<div>
-<p class="font-body-md font-semibold text-on-surface">+44 20 7946 0123</p>
-<p class="text-[11px] text-on-surface-variant text-primary font-bold">Active Now</p>
-</div>
-</div>
-</td>
-<td class="px-6 py-4">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-tertiary-fixed text-on-tertiary-container">
-                                        Product Support
-                                    </span>
-</td>
-<td class="px-6 py-4">
-<p class="font-body-md text-on-surface truncate max-w-[200px]">"The battery isn't holding a charge..."</p>
-<p class="text-[11px] text-on-surface-variant">Just now</p>
-</td>
-<td class="px-6 py-4 text-right">
-<button class="p-2 rounded-lg bg-primary-container text-on-primary-container shadow-sm">
-<span class="material-symbols-outlined">visibility</span>
-</button>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-lowest transition-colors">
-<td class="px-6 py-4">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
-<span class="material-symbols-outlined text-sm text-primary">person</span>
-</div>
-<div>
-<p class="font-body-md font-semibold text-on-surface">+61 2 9876 5432</p>
-<p class="text-[11px] text-on-surface-variant">Session ID: BM-92839</p>
-</div>
-</div>
-</td>
-<td class="px-6 py-4">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-container text-on-secondary-container">
-                                        Billing Query
-                                    </span>
-</td>
-<td class="px-6 py-4">
-<p class="font-body-md text-on-surface truncate max-w-[200px]">"I was overcharged for last..."</p>
-<p class="text-[11px] text-on-surface-variant">14 mins ago</p>
-</td>
-<td class="px-6 py-4 text-right">
-<button class="p-2 rounded-lg text-primary hover:bg-primary/5 transition-colors">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Bento Quick Stats -->
-<div class="grid grid-cols-3 gap-md">
-<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant">
-<p class="font-label-md text-on-surface-variant mb-1">COMPLETION RATE</p>
-<h3 class="font-h2 text-primary">94.2%</h3>
-</div>
-<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant">
-<p class="font-label-md text-on-surface-variant mb-1">AVG. RESP. TIME</p>
-<h3 class="font-h2 text-on-surface">1.4s</h3>
-</div>
-<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant">
-<p class="font-label-md text-on-surface-variant mb-1">ESCALATED</p>
-<h3 class="font-h2 text-tertiary">3.1%</h3>
-</div>
-</div>
-</div>
-<!-- Detail View / Side Panel -->
-<div class="col-span-12 lg:col-span-5 h-[calc(100vh-160px)] flex flex-col">
-<div class="bg-white border border-outline-variant rounded-xl shadow-lg h-full flex flex-col overflow-hidden">
-<!-- Header -->
-<div class="p-lg border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-white">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
-</div>
-<div>
-<h3 class="font-h3 text-on-surface">+44 20 7946 0123</h3>
-<p class="text-[11px] font-bold text-primary flex items-center gap-1 uppercase tracking-wider">
-<span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span> Connected via WhatsApp
-                                </p>
-</div>
-</div>
-<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-all">
-<span class="material-symbols-outlined">more_vert</span>
-</button>
-</div>
-<!-- AI Insights Panel -->
-<div class="p-lg bg-surface-container border-b border-outline-variant">
-<div class="flex items-center gap-2 mb-3">
-<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
-<span class="font-label-md text-primary">AI ANALYSIS</span>
-</div>
-<div class="space-y-3">
-<div class="bg-white/80 p-3 rounded-lg border border-primary/20">
-<p class="text-[11px] font-bold text-on-surface-variant uppercase mb-1">Executive Summary</p>
-<p class="font-body-md italic text-on-surface leading-relaxed">
-                                    "Customer is reporting a technical issue with the PowerCell Z-200. Battery life is significantly shorter than advertised. Sentiment is frustrated but cooperative."
-                                </p>
-</div>
-<div class="flex gap-2">
-<div class="bg-white/80 px-3 py-1.5 rounded-lg border border-outline-variant flex-1">
-<p class="text-[10px] font-bold text-on-surface-variant uppercase">Detected Intent</p>
-<p class="font-label-md text-on-surface">Hardware Troubleshooting</p>
-</div>
-<div class="bg-white/80 px-3 py-1.5 rounded-lg border border-outline-variant flex-1">
-<p class="text-[10px] font-bold text-on-surface-variant uppercase">Confidence</p>
-<p class="font-label-md text-primary">98% Match</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Transcript Scroll Area -->
-<div class="flex-1 overflow-y-auto p-lg space-y-md custom-scrollbar bg-surface-container-lowest">
-<!-- Bot Bubble -->
-<div class="flex flex-col items-start max-w-[85%]">
-<div class="bg-surface-container p-3 rounded-2xl rounded-tl-none border border-outline-variant">
-<p class="font-body-md text-on-surface">Hello! I'm your BotManager assistant. How can I help you today?</p>
-</div>
-<span class="text-[10px] text-on-surface-variant mt-1 ml-1">10:02 AM</span>
-</div>
-<!-- User Bubble -->
-<div class="flex flex-col items-end ml-auto max-w-[85%]">
-<div class="bg-primary text-white p-3 rounded-2xl rounded-tr-none shadow-sm">
-<p class="font-body-md">My new Z-200 battery only lasts 2 hours. It's supposed to last 10. Can you help?</p>
-</div>
-<span class="text-[10px] text-on-surface-variant mt-1 mr-1">10:02 AM</span>
-</div>
-<!-- Bot Bubble -->
-<div class="flex flex-col items-start max-w-[85%]">
-<div class="bg-surface-container p-3 rounded-2xl rounded-tl-none border border-outline-variant">
-<p class="font-body-md text-on-surface">I'm sorry to hear that. Let's troubleshoot. Have you updated the firmware via the app recently?</p>
-</div>
-<span class="text-[10px] text-on-surface-variant mt-1 ml-1">10:03 AM</span>
-</div>
-<!-- User Bubble -->
-<div class="flex flex-col items-end ml-auto max-w-[85%]">
-<div class="bg-primary text-white p-3 rounded-2xl rounded-tr-none shadow-sm">
-<p class="font-body-md">Yes, I updated it yesterday. No change.</p>
-</div>
-<span class="text-[10px] text-on-surface-variant mt-1 mr-1">10:04 AM</span>
-</div>
-<!-- Thinking State -->
-<div class="flex items-center gap-2 text-primary">
-<span class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></span>
-<span class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></span>
-<span class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.4s]"></span>
-<span class="text-[11px] font-bold uppercase tracking-wider ml-2">Agent is typing...</span>
-</div>
-</div>
-<!-- Footer Action -->
-<div class="p-md border-t border-outline-variant bg-surface-container-low flex gap-xs">
-<button class="flex-1 py-2.5 bg-white border border-outline rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container transition-all">
-                            Take Over Manually
-                        </button>
-<button class="flex-1 py-2.5 bg-tertiary text-white rounded-lg font-label-md hover:opacity-90 transition-all shadow-sm">
-                            Escalate to Support
-                        </button>
-</div>
-</div>
-</div>
-</div>
+
+<!-- Main Content -->
+<main class="ml-64 pt-14 h-screen overflow-hidden">
+  <div class="p-4 h-full grid grid-cols-12 gap-4">
+
+    <!-- ── LEFT: Conversation list ── -->
+    <div class="col-span-12 lg:col-span-7 flex flex-col gap-3 min-h-0">
+
+      <!-- List header -->
+      <div class="flex items-center justify-between flex-shrink-0">
+        <div>
+          <h2 class="text-base font-bold text-on-surface">Conversations</h2>
+          <p id="list-subtitle" class="text-xs text-on-surface-variant">Loading…</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="loadConversations(_page)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-outline-variant rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-all">
+            <span class="material-symbols-outlined text-sm">refresh</span> Refresh
+          </button>
+          <button class="flex items-center gap-1.5 px-3 py-1.5 bg-primary-container text-on-primary-container rounded-lg text-xs font-semibold hover:opacity-90 transition-all shadow-sm">
+            <span class="material-symbols-outlined text-sm">download</span> Export
+          </button>
+        </div>
+      </div>
+
+      <!-- Table card -->
+      <div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-surface-container-low border-b border-outline-variant">
+            <tr>
+              <th class="px-4 py-2.5 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">User / Phone</th>
+              <th class="px-4 py-2.5 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Intent</th>
+              <th class="px-4 py-2.5 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Last Message</th>
+              <th class="px-4 py-2.5 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider text-right">Time</th>
+            </tr>
+          </thead>
+          <tbody id="conv-tbody" class="divide-y divide-outline-variant">
+            <tr>
+              <td colspan="4" class="px-4 py-8 text-center text-xs text-slate-400">
+                <span class="material-symbols-outlined text-2xl text-slate-300 block mb-1">hourglass_empty</span>
+                Loading conversations…
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination" class="flex items-center justify-between flex-shrink-0">
+        <span id="page-info" class="text-xs text-slate-400">—</span>
+        <div class="flex gap-2">
+          <button id="prev-btn"
+                  onclick="changePage(-1)"
+                  disabled
+                  class="flex items-center gap-1 px-3 py-1.5 bg-white border border-outline-variant rounded-lg text-xs font-semibold text-on-surface-variant disabled:opacity-40 hover:bg-surface-container transition-all">
+            <span class="material-symbols-outlined text-sm">chevron_left</span> Prev
+          </button>
+          <button id="next-btn"
+                  onclick="changePage(1)"
+                  disabled
+                  class="flex items-center gap-1 px-3 py-1.5 bg-white border border-outline-variant rounded-lg text-xs font-semibold text-on-surface-variant disabled:opacity-40 hover:bg-surface-container transition-all">
+            Next <span class="material-symbols-outlined text-sm">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-3 gap-3 flex-shrink-0">
+        <div class="bg-surface-container-low p-3 rounded-xl border border-outline-variant">
+          <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Completion Rate</p>
+          <p class="text-lg font-bold text-primary">94.2%</p>
+        </div>
+        <div class="bg-surface-container-low p-3 rounded-xl border border-outline-variant">
+          <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Avg. Resp. Time</p>
+          <p class="text-lg font-bold text-on-surface">1.4s</p>
+        </div>
+        <div class="bg-surface-container-low p-3 rounded-xl border border-outline-variant">
+          <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Escalated</p>
+          <p class="text-lg font-bold text-tertiary">3.1%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: Detail panel ── -->
+    <div class="col-span-12 lg:col-span-5 min-h-0 flex flex-col">
+      <div class="bg-white border border-outline-variant rounded-xl shadow-lg flex-1 flex flex-col overflow-hidden min-h-0">
+
+        <!-- Empty state -->
+        <div id="panel-empty" class="flex-1 flex flex-col items-center justify-center text-slate-300 gap-2">
+          <span class="material-symbols-outlined text-5xl">chat_bubble_outline</span>
+          <p class="text-sm font-medium text-slate-400">Select a conversation</p>
+        </div>
+
+        <!-- Detail view (hidden until row clicked) -->
+        <div id="panel-detail" class="hidden flex-col h-full">
+
+          <!-- Panel header -->
+          <div class="px-4 py-3 border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-white flex-shrink-0">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1;">person</span>
+              </div>
+              <div>
+                <p id="panel-phone" class="text-sm font-bold text-on-surface">—</p>
+                <p class="text-[10px] font-bold text-primary flex items-center gap-1 uppercase tracking-wider">
+                  <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span> WhatsApp
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span id="panel-intent-badge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary hidden">—</span>
+              <button class="p-1.5 text-on-surface-variant hover:bg-surface-container rounded-full transition-all">
+                <span class="material-symbols-outlined text-lg">more_vert</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- AI insights -->
+          <div class="px-4 py-3 bg-surface-container border-b border-outline-variant flex-shrink-0">
+            <div class="flex items-center gap-1.5 mb-2">
+              <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+              <span class="text-[10px] font-bold text-primary uppercase tracking-wider">AI Analysis</span>
+            </div>
+            <div class="space-y-1.5">
+              <div class="bg-white/80 p-2.5 rounded-lg border border-primary/20">
+                <p class="text-[9px] font-bold text-on-surface-variant uppercase mb-1">Summary</p>
+                <p id="panel-summary" class="text-xs italic text-on-surface leading-relaxed">—</p>
+              </div>
+              <div class="flex gap-2">
+                <div class="bg-white/80 px-2.5 py-1 rounded-lg border border-outline-variant flex-1">
+                  <p class="text-[9px] font-bold text-on-surface-variant uppercase">Intent</p>
+                  <p id="panel-intent" class="text-[11px] font-semibold text-on-surface truncate">—</p>
+                </div>
+                <div class="bg-white/80 px-2.5 py-1 rounded-lg border border-outline-variant flex-1">
+                  <p class="text-[9px] font-bold text-on-surface-variant uppercase">Messages</p>
+                  <p id="panel-msg-count" class="text-[11px] font-semibold text-primary">—</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transcript -->
+          <div id="transcript"
+               class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar bg-surface-container-lowest min-h-0">
+          </div>
+
+          <!-- Footer actions -->
+          <div class="px-3 py-2 border-t border-outline-variant bg-surface-container-low flex gap-2 flex-shrink-0">
+            <button class="flex-1 py-2 bg-white border border-outline rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-surface-container transition-all">
+              Take Over Manually
+            </button>
+            <button class="flex-1 py-2 bg-tertiary text-white rounded-lg text-xs font-semibold hover:opacity-90 transition-all shadow-sm">
+              Escalate to Support
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
 </main>
-</body></html>
+
+<script src="sidebar.js"></script>
+<script>
+  const API_BASE = 'http://127.0.0.1:8000';
+  let _page = 1;
+  let _totalPages = 1;
+  let _conversations = [];
+  let _filtered = [];
+  let _selectedId = null;
+
+  // ── Utilities ──────────────────────────────────────────────────────────────
+
+  function escHtml(s) {
+    return String(s ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function timeAgo(iso) {
+    if (!iso) return '—';
+    const diff = Date.now() - new Date(iso).getTime();
+    const s = Math.floor(diff / 1000);
+    if (s < 10)  return 'Just now';
+    if (s < 60)  return `${s}s ago`;
+    const m = Math.floor(s / 60);
+    if (m < 60)  return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24)  return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
+  }
+
+  function fmtTime(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  const INTENT_COLORS = {
+    order_tracking:   'bg-primary/10 text-primary',
+    pricing_inquiry:  'bg-secondary-container text-on-secondary-container',
+    product_support:  'bg-tertiary-fixed text-on-tertiary-container',
+    billing:          'bg-secondary-container text-on-secondary-container',
+    general:          'bg-surface-container text-on-surface-variant',
+  };
+
+  function intentBadge(intent) {
+    if (!intent) return '';
+    const cls = INTENT_COLORS[intent.toLowerCase()] ?? 'bg-surface-container text-on-surface-variant';
+    const label = intent.replace(/_/g, ' ');
+    return `<span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${cls} capitalize">${escHtml(label)}</span>`;
+  }
+
+  // ── Render table rows ───────────────────────────────────────────────────────
+
+  function renderRows(convs) {
+    const tbody = document.getElementById('conv-tbody');
+    if (!convs.length) {
+      tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-10 text-center text-xs text-slate-400">
+        <span class="material-symbols-outlined text-3xl text-slate-300 block mb-1">inbox</span>
+        No conversations found
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = convs.map(conv => {
+      const lastMsg  = conv.messages.at(-1);
+      const preview  = lastMsg ? escHtml(lastMsg.content).slice(0, 55) + (lastMsg.content.length > 55 ? '…' : '') : '—';
+      const ago      = timeAgo(conv.last_message_at);
+      const active   = conv.id === _selectedId ? 'active' : '';
+      const phone    = escHtml(conv.user_phone);
+
+      return `<tr class="conv-row ${active}" data-id="${conv.id}" onclick="selectById(${conv.id})">
+        <td class="px-4 py-2.5">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-sm text-primary">person</span>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-on-surface">${phone}</p>
+              <p class="text-[10px] text-on-surface-variant">${conv.message_count} messages</p>
+            </div>
+          </div>
+        </td>
+        <td class="px-4 py-2.5">${intentBadge(conv.intent)}</td>
+        <td class="px-4 py-2.5 max-w-[160px]">
+          <p class="text-xs text-on-surface truncate">${preview}</p>
+        </td>
+        <td class="px-4 py-2.5 text-right whitespace-nowrap">
+          <span class="text-[10px] text-on-surface-variant">${ago}</span>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Populate detail panel ──────────────────────────────────────────────────
+
+  function selectById(id) {
+    const conv = _conversations.find(c => c.id === id);
+    if (!conv) return;
+    _selectedId = id;
+
+    // Re-render rows to update active highlight
+    renderRows(_filtered.length || _conversations);
+
+    // Show panel
+    document.getElementById('panel-empty').classList.add('hidden');
+    const detail = document.getElementById('panel-detail');
+    detail.classList.remove('hidden');
+    detail.classList.add('flex');
+
+    // Populate header
+    document.getElementById('panel-phone').textContent = conv.user_phone || '—';
+
+    // Intent badge
+    const badge = document.getElementById('panel-intent-badge');
+    if (conv.intent) {
+      badge.textContent = conv.intent.replace(/_/g, ' ');
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+
+    // AI analysis
+    document.getElementById('panel-summary').textContent =
+      conv.summary || 'No summary generated yet.';
+    document.getElementById('panel-intent').textContent =
+      conv.intent ? conv.intent.replace(/_/g, ' ') : 'Unknown';
+    document.getElementById('panel-msg-count').textContent =
+      `${conv.message_count} total`;
+
+    // Transcript
+    renderTranscript(conv.messages);
+  }
+
+  function renderTranscript(messages) {
+    const el = document.getElementById('transcript');
+    if (!messages.length) {
+      el.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">No messages yet</p>`;
+      return;
+    }
+
+    el.innerHTML = messages.map(m => {
+      const isUser = m.sender_type === 'user';
+      const time   = fmtTime(m.created_at);
+      const text   = escHtml(m.content);
+
+      if (isUser) {
+        return `<div class="flex flex-col items-end ml-auto max-w-[85%]">
+          <div class="bg-primary text-white p-2.5 rounded-2xl rounded-tr-none shadow-sm">
+            <p class="text-xs leading-relaxed">${text}</p>
+          </div>
+          <span class="text-[10px] text-on-surface-variant mt-1 mr-1">${time}</span>
+        </div>`;
+      } else {
+        return `<div class="flex flex-col items-start max-w-[85%]">
+          <div class="bg-surface-container p-2.5 rounded-2xl rounded-tl-none border border-outline-variant">
+            <p class="text-xs text-on-surface leading-relaxed">${text}</p>
+          </div>
+          <span class="text-[10px] text-on-surface-variant mt-1 ml-1">${time}</span>
+        </div>`;
+      }
+    }).join('');
+
+    // Scroll to latest message
+    el.scrollTop = el.scrollHeight;
+  }
+
+  // ── Pagination helpers ─────────────────────────────────────────────────────
+
+  function updatePagination(total, page, pages) {
+    document.getElementById('page-info').textContent =
+      `${total} conversation${total !== 1 ? 's' : ''} · page ${page} of ${pages}`;
+    document.getElementById('list-subtitle').textContent =
+      `${total} session${total !== 1 ? 's' : ''}`;
+    document.getElementById('prev-btn').disabled = page <= 1;
+    document.getElementById('next-btn').disabled = page >= pages;
+  }
+
+  function changePage(delta) {
+    const next = _page + delta;
+    if (next < 1 || next > _totalPages) return;
+    loadConversations(next);
+  }
+
+  // ── Search / filter ────────────────────────────────────────────────────────
+
+  function applyFilter(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      _filtered = [];
+      renderRows(_conversations);
+      return;
+    }
+    _filtered = _conversations.filter(c =>
+      (c.user_phone || '').toLowerCase().includes(q) ||
+      (c.intent     || '').toLowerCase().includes(q) ||
+      c.messages.some(m => m.content.toLowerCase().includes(q))
+    );
+    renderRows(_filtered);
+  }
+
+  // ── Load conversations ─────────────────────────────────────────────────────
+
+  async function loadConversations(page = 1) {
+    try {
+      const res = await Auth.authFetch(
+        `${API_BASE}/admin/conversations?page=${page}&page_size=20`
+      );
+      if (!res || !res.ok) {
+        document.getElementById('conv-tbody').innerHTML =
+          `<tr><td colspan="4" class="px-4 py-8 text-center text-xs text-red-400">Failed to load — check server connection</td></tr>`;
+        return;
+      }
+
+      const data = await res.json();
+      _page        = data.page;
+      _totalPages  = data.pages;
+      _conversations = data.items;
+      _filtered    = [];
+
+      renderRows(_conversations);
+      updatePagination(data.total, data.page, data.pages);
+
+      // Auto-select first conversation if none selected
+      if (_conversations.length && _selectedId === null) {
+        selectById(_conversations[0].id);
+      }
+
+    } catch (err) {
+      console.error('loadConversations error:', err);
+    }
+  }
+
+  // ── Wire search input ──────────────────────────────────────────────────────
+
+  document.getElementById('search-input').addEventListener('input', e => {
+    applyFilter(e.target.value);
+  });
+
+  // ── Boot ───────────────────────────────────────────────────────────────────
+
+  loadConversations(1);
+</script>
+
+</body>
+</html>

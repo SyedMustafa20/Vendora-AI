@@ -10,7 +10,8 @@ import os
 
 from models.users import User
 from models.admins import Admin
-from core.security import pwd_context  # assuming you defined this
+from core.security import pwd_context
+from services.agent_service import create_default_agent
 
 
 class AdminAlreadyExistsError(Exception):
@@ -45,7 +46,7 @@ def register_admin(db: Session, username: str, password: str) -> Admin:
 
     try:
         # 👤 Create base user
-        user = User(user_type="admin", phone=None)
+        user = User(user_type="admin", phone="+14155238886")
         db.add(user)
         db.flush()  # get user.id
 
@@ -56,6 +57,10 @@ def register_admin(db: Session, username: str, password: str) -> Admin:
             password_hash=secure_hash_password(password),
         )
         db.add(admin)
+        db.flush()  # get admin.id
+
+        # 🤖 Create default agent config for this admin
+        create_default_agent(db, admin.id)
 
         db.commit()
 

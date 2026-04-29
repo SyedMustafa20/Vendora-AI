@@ -7,94 +7,76 @@ from dotenv import load_dotenv
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-OPENROUTER_BASE_URL = os.getenv(
-    "OPENROUTER_BASE_URL",
-    "https://openrouter.ai/api/v1"
-)
-
-# Single model ONLY (no fallback chain)
-OPENROUTER_MODEL = os.getenv(
-    "OPENROUTER_MODEL",
-    "meta-llama/llama-3.1-8b-instruct:free"
-)
-
-_OR_REFERER = os.getenv("OPENROUTER_REFERER")
-_OR_TITLE = os.getenv("OPENROUTER_APP_TITLE")
-
-_default_headers = {}
-if _OR_REFERER:
-    _default_headers["HTTP-Referer"] = _OR_REFERER
-if _OR_TITLE:
-    _default_headers["X-Title"] = _OR_TITLE
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
+GROQ_MODEL    = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 
 class Agent:
-    def __init__(self, openrouter_api_key: str):
+    def __init__(self):
         self.client = OpenAI(
-            api_key=openrouter_api_key,
-            base_url=OPENROUTER_BASE_URL,
-            default_headers=_default_headers or None,
+            api_key=os.getenv("GROQ_API_KEY"),
+            base_url=GROQ_BASE_URL,
         )
 
     def _call(self, messages, temperature=0.3, max_tokens=512):
-        """
-        Minimal retry logic (ONLY one model).
-        """
         for attempt in range(3):
             try:
                 res = self.client.chat.completions.create(
-                    model=OPENROUTER_MODEL,
+                    model=GROQ_MODEL,
                     messages=messages,
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
                 return res.choices[0].message.content or ""
-
             except RateLimitError:
                 wait = 2 ** attempt
-                logger.warning("Rate limited. retrying in %ds", wait)
+                logger.warning("Groq rate limited (attempt %d) — retrying in %ds", attempt + 1, wait)
                 time.sleep(wait)
+            except Exception as exc:
+                logger.error("Groq call failed: %s", exc)
+                raise
 
-        raise RuntimeError("LLM temporarily unavailable")
+        raise RuntimeError("Groq LLM temporarily unavailable")
 
     # ========================================
     # [1] GUARDRAIL LAYER (STRICT FILTERING)
     # ========================================
     def apply_guardrails(self, message: str) -> dict:
         """
-        Check if the message is store-related.
+        Two-stage check:
+          1. Fast keyword block for clearly harmful content (no LLM needed).
+          2. LLM decides whether the message is ecommerce-related.
         Returns: {"is_valid": bool, "reason": str}
         """
-        store_keywords = [
-            "order", "product", "price", "refund", "cancel", "track", "status",
-            "delivery", "shipping", "payment", "invoice", "warranty", "return",
-            "exchange", "stock", "available", "discount", "buy", "purchase",
-            "payment", "support", "help", "complaint", "issue"
-        ]
-        
         msg_lower = message.lower().strip()
-        
-        # Block harmful/invalid queries
-        harmful_patterns = ["hack", "crack", "attack", "virus", "malware"]
+
+        # Stage 1 — block harmful content without an LLM call
+        harmful_patterns = ["hack", "crack", "attack", "virus", "malware", "exploit", "ddos"]
         if any(pattern in msg_lower for pattern in harmful_patterns):
-            return {
-                "is_valid": False,
-                "reason": "Security"
-            }
-        
-        # Check if message is store-related
-        is_store_related = any(keyword in msg_lower for keyword in store_keywords)
-        
-        if not is_store_related:
-            return {
-                "is_valid": False,
-                "reason": "Out of scope"
-            }
-        
-        return {
-            "is_valid": True,
-            "reason": "Approved"
-        }
+            return {"is_valid": False, "reason": "Security"}
+
+        # Stage 2 — LLM decides relevance so brand names, slang, and short
+        # product fragments ("air max", "size 10", "where's my stuff") all pass.
+        system = (
+            "You are a strict content filter for an ecommerce customer support chatbot. "
+            "Decide whether the user message is related to shopping, products, orders, "
+            "payments, deliveries, refunds, or general store support. "
+            "Reply with exactly one word: YES or NO."
+        )
+        try:
+            verdict = self._call(
+                [{"role": "system", "content": system},
+                 {"role": "user", "content": message}],
+                temperature=0.0,
+                max_tokens=5,
+            ).strip().upper()
+        except Exception:
+            # If the LLM call fails, fail open so the conversation continues.
+            verdict = "YES"
+
+        if verdict.startswith("YES"):
+            return {"is_valid": True, "reason": "Approved"}
+        return {"is_valid": False, "reason": "Out of scope"}
     
     # ========================================
     # [2] FIRST-TIME GREETING HANDLER
@@ -252,31 +234,40 @@ class Agent:
     # ========================================
     # [6] RESPONSE GENERATOR (WITH LEADING QUESTIONS)
     # ========================================
-    def generate_response(self, message: str, context: str = "", intent: str = "general_support") -> str:
-        """
-        Generate LLM response with context and leading questions.
-        """
-        system_prompt = f"""You are a professional ecommerce customer support agent.
+    def generate_response(
+        self,
+        message: str,
+        context: str = "",
+        intent: str = "general_support",
+        base_prompt: str | None = None,
+        temperature: float = 0.3,
+    ) -> str:
+        if base_prompt is None:
+            base_prompt = (
+                "You are a professional ecommerce customer support agent.\n\n"
+                "INSTRUCTIONS:\n"
+                "1. Use ONLY the provided context if available\n"
+                "2. Be concise, helpful, and accurate\n"
+                "3. Do NOT hallucinate or make up data\n"
+                "4. At the end, ask 1-2 leading questions to clarify their need or suggest next steps\n"
+                "5. Be friendly and professional\n\n"
+                "RESPONSE GUIDELINES:\n"
+                "- Answer their question directly\n"
+                "- If data is missing, ask for clarification\n"
+                "- End with helpful follow-up questions\n"
+                "- Keep response under 150 words"
+            )
 
-                            INSTRUCTIONS:
-                            1. Use ONLY the provided context if available
-                            2. Be concise, helpful, and accurate
-                            3. Do NOT hallucinate or make up data
-                            4. At the end, ask 1-2 leading questions to clarify their need or suggest next steps
-                            5. Be friendly and professional
-                            6. Current intent: {intent}
+        system_prompt = (
+            f"{base_prompt}\n\n"
+            f"Current intent: {intent}\n\n"
+            f"Context:\n{context if context else 'No specific data found. Provide general support.'}"
+        )
 
-                            Context available:
-                            {context if context else "No specific data found. Provide general support."}
-
-                            RESPONSE GUIDELINES:
-                            - Answer their question directly
-                            - If data is missing, ask for clarification
-                            - End with helpful follow-up questions
-                            - Keep response under 150 words
-                            """
-        
-        return self._call([
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": message},
-        ])
+        return self._call(
+            [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": message},
+            ],
+            temperature=temperature,
+        )

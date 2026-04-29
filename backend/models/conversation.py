@@ -7,7 +7,7 @@ class Conversation(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    agent_id = Column(Integer, ForeignKey("agents.id"), nullable=True)
+    agent_id = Column(Integer, ForeignKey("agent_configs.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     intent = Column(String, nullable=True)
     conversation_summary = Column(Text, nullable=True)
